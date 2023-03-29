@@ -9,7 +9,7 @@ import quopri
 # Configurações de login
 HOST = 'imap.gmail.com'
 USERNAME = 'orniliooficial@gmail.com'
-PASSWORD = ''
+PASSWORD = 'lllxotdrdagmwxxa'
 
 # Diretório de download
 download_dir = 'downloads'
@@ -58,13 +58,23 @@ with IMAPClient(HOST) as server:
                 filename = part.get_filename()
                 filepath = os.path.abspath(os.path.join(sender_folder, sanitize_filename(quopri.decodestring(filename).decode('utf-8'))))
 
+       
 
 
                 # Salvar arquivo no diretório correspondente
                 with open(filepath, 'wb') as f:
                     f.write(part.get_payload(decode=True))
 
+         # Salvar o conteúdo do email em um arquivo de texto
+        text_content = ''
+        for part in email_message.walk():
+            if part.get_content_type() == 'text/plain':
+                text_content += part.get_payload(decode=True).decode('utf-8')
+                
+        if text_content:
+            text_file_path = os.path.abspath(os.path.join(sender_folder, 'email_content.txt'))
+            with open(text_file_path, 'w', encoding='utf-8') as f:
+                f.write(text_content)
 
-
-        # Marcar email como lido
-        server.add_flags(uid, [b'Seen'])
+    # Marcar email como lido
+    server.add_flags(uid, [b'Seen'])
